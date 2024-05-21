@@ -2,6 +2,7 @@ import requests
 import os
 from bs4 import BeautifulSoup
 import time
+from fpdf import FPDF
 
 def get_words_from_page(soup):
     links = soup.find_all('a')
@@ -9,7 +10,7 @@ def get_words_from_page(soup):
     words = [x.get_text() for x in links if x.get('href') and '/wiki/' in x.get('href') and all ([y not in x.get('href') for y in filters])]
     return words
 
-def scrape_wiktionary_category(url):
+def scrape_wiktionary_category(url, do_save_as_pdf = True):
     words = []
     page_number = 1
     while True:
@@ -28,10 +29,18 @@ def scrape_wiktionary_category(url):
         os.makedirs('Output')
     with open('Output/words.txt', 'w') as f:
         f.write('\n'.join(sorted(list(set(words)))))
+    if do_save_as_pdf:
+        pdf = FPDF()   
+        pdf.add_page()
+        pdf.set_font('Times', size = 12)
+        with open('Output/words.txt') as f:
+            for x in f:
+                pdf.cell(200, 10, txt = x, ln = 1)
+        pdf.output('Output/words.pdf')
 
 def main():
     url = 'https://en.wiktionary.org/wiki/Category:Galician_terms_with_unknown_etymologies'
-    scrape_wiktionary_category(url)
+    scrape_wiktionary_category(url, True)
 
 if __name__ == '__main__':
     main()
