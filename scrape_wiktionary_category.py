@@ -22,14 +22,15 @@ def scrape_wiktionary_category(url, folder_name, file_title, do_save_as_pdf = Tr
         page_number += 1
         next_page_link = soup.find('a', string = 'next page')
         if not next_page_link:
-            print('Completed.')
+            print(f'Completed scraping {category}.')
             break 
         url = 'https://en.wiktionary.org' + next_page_link.get('href')
         time.sleep(2)
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
-    with open(f'{folder_name}/{file_title}.txt', 'w') as f:
+    with open(f'{folder_name}/{file_title}.txt', 'w', encoding = 'utf-8') as f:
         f.write('\n'.join(sorted(list(set(words)))))
+        print(f'Saved file: {folder_name}/{file_title}.txt')
     if do_save_as_pdf:
         pdf = FPDF()   
         pdf.add_page()
@@ -38,6 +39,7 @@ def scrape_wiktionary_category(url, folder_name, file_title, do_save_as_pdf = Tr
             for x in f:
                 pdf.cell(200, 10, txt = x, ln = 1)
         pdf.output(f'{folder_name}/{file_title}.pdf')
+        print(f'Saved file: {folder_name}/{file_title}.pdf')
 
 def main():
     url = 'https://en.wiktionary.org/wiki/Category:Galician_terms_with_unknown_etymologies'
