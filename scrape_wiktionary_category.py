@@ -6,7 +6,7 @@ from fpdf import FPDF
 
 def get_words_from_page(soup):
     links = soup.find_all('a')
-    filters = ['Appendix', 'Categor', 'Help', 'Special', 'Wiktionary']
+    filters = ['Appendix', 'Categor', 'Help', 'Special', 'Wiktionary', 'wiktionary.org'] #The last element filters out Wiktionary pages in other languages
     words = [x.get_text() for x in links if x.get('href') and '/wiki/' in x.get('href') and all ([y not in x.get('href') for y in filters])]
     return words
 
