@@ -13,12 +13,12 @@ def get_words_from_page(soup):
 def scrape_wiktionary_category(url, folder_name, file_title, do_save_as_pdf = True):
     words = []
     page_number = 1
-    start_url = url
+    category = url.split('/')[-1]
     while True:
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         words.extend(get_words_from_page(soup))
-        print(f'Scraped page {page_number} from {start_url}')
+        print(f'Scraped page {page_number} from {category}.')
         page_number += 1
         next_page_link = soup.find('a', string = 'next page')
         if not next_page_link:
